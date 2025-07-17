@@ -74,7 +74,7 @@ export default function OptionMoneynessExplorer() {
       <br />
 
       <label>
-        Strike Price (X): {strikePrice}
+        Exercise Price (X): {strikePrice}
         <input
           type="range"
           min="0"
@@ -115,17 +115,27 @@ export default function OptionMoneynessExplorer() {
         textAlign: "right",
         marginTop: "-90px",
         marginBottom: "10px",
-        maxWidth: "350px",
+        minWidth: "360px",
         padding: "10px",
         border: "1px solid #ddd",
         borderRadius: "8px",
-        background: "#f9f9f9"
+        background: "#f9f9f9",
+        fontFamily: "monospace"
       }}>
         <div><strong>{moneyness}</strong></div>
         <div><strong>Intrinsic Value:</strong> {intrinsicValue.toFixed(2)}</div>
         <div>
           Payoff = max(0,&nbsp;
-          {optionType === "call" ? "S - X" : "X - S"}) = max(0,&nbsp;
+          {optionType === "call" ? (
+            <>
+              S<sub>r</sub> - Exercise Price
+            </>
+          ) : (
+            <>
+              Exercise Price - S<sub>r</sub>
+            </>
+          )}
+          ) = max(0,&nbsp;
           {optionType === "call"
             ? `${spotPrice} - ${strikePrice}`
             : `${strikePrice} - ${spotPrice}`}
