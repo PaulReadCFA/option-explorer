@@ -54,7 +54,7 @@ export default function OptionMoneynessExplorer() {
     if (moneyness.includes("Deep")) return "#7a46ff"; // Deep ITM
     if (moneyness.includes("ITM")) return "#4476ff";  // ITM
     if (moneyness.includes("ATM")) return "#f5ca27";  // ATM
-    return "#cccccc";                                   // OTM
+    return "#cccccc";                                 // OTM
   };
 
   return (
@@ -108,10 +108,41 @@ export default function OptionMoneynessExplorer() {
           <option value="put">Put</option>
         </select>
       </label>
-      <br /><br />
 
-      <div style={{ marginTop: "1rem", backgroundColor: getColor(), color: "#000", padding: "10px", borderRadius: "6px" }}>
-        <strong>Intrinsic Value:</strong> {intrinsicValue.toFixed(2)} <br />
+      {/* Info box in top right */}
+      <div style={{
+        float: "right",
+        textAlign: "right",
+        marginTop: "-90px",
+        marginBottom: "10px",
+        maxWidth: "350px",
+        padding: "10px",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        background: "#f9f9f9"
+      }}>
+        <div><strong>{moneyness}</strong></div>
+        <div><strong>Intrinsic Value:</strong> {intrinsicValue.toFixed(2)}</div>
+        <div>
+          Payoff = max(0,&nbsp;
+          {optionType === "call" ? "S - X" : "X - S"}) = max(0,&nbsp;
+          {optionType === "call"
+            ? `${spotPrice} - ${strikePrice}`
+            : `${strikePrice} - ${spotPrice}`}
+          ) = {intrinsicValue.toFixed(2)}
+        </div>
+      </div>
+
+      <br style={{ clear: "both" }} />
+
+      {/* Output box */}
+      <div style={{
+        marginTop: "1rem",
+        backgroundColor: getColor(),
+        color: "#000",
+        padding: "10px",
+        borderRadius: "6px"
+      }}>
         <strong>Time Value:</strong> {timeValue.toFixed(2)} <br />
         <strong>Total Option Value:</strong> {totalValue.toFixed(2)} <br />
         <strong>Moneyness:</strong> {moneyness}
@@ -119,13 +150,16 @@ export default function OptionMoneynessExplorer() {
 
       <div style={{ height: 300, marginTop: 30 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={payoffData} margin={{ top: 10, right: 30, left: 20, bottom: 30 }}>
+          <LineChart
+            data={payoffData}
+            margin={{ top: 10, right: 30, left: 20, bottom: 30 }}
+          >
             <XAxis
               dataKey="s"
               type="number"
               domain={[minX, maxX]}
               label={{
-                value: "Spot Price (S)",
+                value: "Exercise Price (X)",
                 position: "insideBottom",
                 dy: 20,
                 style: { fontSize: 12, fill: "#333" },
@@ -153,11 +187,9 @@ export default function OptionMoneynessExplorer() {
             />
             <ReferenceDot
               x={spotPrice}
-              y={
-                optionType === "call"
-                  ? Math.max(0, spotPrice - strikePrice)
-                  : Math.max(0, strikePrice - spotPrice)
-              }
+              y={optionType === "call"
+                ? Math.max(0, spotPrice - strikePrice)
+                : Math.max(0, strikePrice - spotPrice)}
               r={6}
               fill="#ea792d"
               stroke="black"
